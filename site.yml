@@ -55,11 +55,5 @@
         enabled: true
       when: ansible_distribution is defined and ansible_distribution == "CentOS"
       
-- hosts: file_servers
-  become: true
-  tasks:
-    - name: Install Samba package
-      package:
-        name: samba
-        state: latest
+
 
