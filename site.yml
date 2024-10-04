@@ -43,7 +43,7 @@
       dnf:
         name: mariadb-server
         state: latest
-      when: ansible_distribution == "CentOS"
+      when: ansible_distribution is defined and ansible_distribution == "CentOS"
 
     - name: Mariadb Restarting/Enabling
       tags: db, mariadb, ubuntu
