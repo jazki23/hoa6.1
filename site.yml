@@ -2,37 +2,55 @@
 - hosts: all
   become: true
   pre_tasks:
-   
-  - name: install updates (CentOS)
-    dnf:
-      update_only: yes
-      update_cache: yes
-    when: ansible_distribution is defined and ansible_distribution == "CentOS"
+    - name: Install updates (CentOS)
+      dnf:
+        update_only: yes
+        update_cache: yes
+      when: ansible_distribution == "CentOS"
     
-  - name: install updates (Ubuntu)
-    apt:
-      upgrade: dist
-      update_cache: yes
-    when: ansible_distribution is defined and ansible_distribution == "CentOS"
+    - name: Install updates (Ubuntu)
+      apt:
+        upgrade: dist
+        update_cache: yes
+      when: ansible_distribution == "Ubuntu"
 
 - hosts: servers
   become: true
   tasks:
-  
-  - name: install apache and php for Ubuntu servers
-    apt:
-      name:
-        - apache2
-        - libapache2-mod-php
-      state: latest
-    when: ansible_distribution is defined and ansible_distribution == "Ubuntu"
+    - name: Install Apache and PHP for Ubuntu servers
+      apt:
+        name:
+          - apache2
+          - libapache2-mod-php
+        state: latest
+      when: ansible_distribution == "Ubuntu"
     
-  - name: install apache and php for CentOS servers
-    dnf:
-      name:
-        - httpd
-        - php
-      state: latest
-    when: ansible_distribution is defined and ansible_distribution == "CentOS"
-    
+    - name: Install Apache and PHP for CentOS servers
+      dnf:
+        name:
+          - httpd
+          - php
+        state: latest
+      when: ansible_distribution == "CentOS"
 
+- hosts: servers
+  become: true
+  tasks:
+    - name: Install MariaDB package (CentOS)
+      dnf:
+        name: mariadb-server
+        state: latest
+      when: ansible_distribution == "CentOS"
+    
+    - name: Install MariaDB package (Ubuntu)
+      apt:
+        name: mariadb-server
+        state: latest
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Restart and enable MariaDB
+      service:
+        name: mariadb
+        state: restarted
+        enabled: true
+      when: ansible_distribution in ["CentOS", "Ubuntu"]
