@@ -34,7 +34,7 @@
         - php
       state: latest
     when: ansible_distribution is defined and ansible_distribution == "CentOS"
-- hosts: kiercentos
+- hosts: all
   become: true
   tasks:
   
